@@ -19,4 +19,6 @@ export class DueDateCalculator {
         }
         return new Date();
     }
+    protected isWorkDay(date: Date): boolean {throw new Error}
+    protected isWorkHour(date: Date): boolean {throw new Error}
 }
