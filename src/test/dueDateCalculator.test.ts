@@ -91,17 +91,18 @@ describe('DueDateCalculator calculateDueDate cases', function () {
     });
 });
 
-describe('DueDateCalculator calculate DueDate cases when submit is before or after work time', function(){
+describe('DueDateCalculator calculate DueDate cases when submit is before or after work time', function () {
     it('should add 1 hour if submitted before worktime', function () {
         const resultValue = dueDateCalculator.calculateDueDate(new Date(2025, 0, 1, 0, 0, 0), 1);
         const expectedValue = new Date(2025, 0, 1, 10, 0, 0);
         assert.strictEqual(resultValue.getTime(), expectedValue.getTime());
-      })
-      it('should add 1 hour if submitted after worktime', function () {
+    });
+
+    it('should add 1 hour if submitted after worktime', function () {
         const resultValue = dueDateCalculator.calculateDueDate(new Date(2025, 0, 1, 17, 0, 0), 1);
         const expectedValue = new Date(2025, 0, 2, 10, 0, 0);
         assert.strictEqual(resultValue.getTime(), expectedValue.getTime());
-      })
-})
+    });
+});
 
 

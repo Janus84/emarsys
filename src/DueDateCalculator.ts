@@ -7,6 +7,7 @@ export class DueDateCalculator {
     /**
      * Calculates the due date by adding turnaround time to the submit date
      * considering working hours (9AM - 5PM) and skipping weekends.
+     * 
      * @param submit Date and time when the task is submitted.
      * @param turnaround  Number of working hours to add to the submit date.
      * @returns The calculated due date, considering working time and weekends.
@@ -40,7 +41,7 @@ export class DueDateCalculator {
 
     protected isWorkHour(date: Date): boolean {
         const actualHour = date.getHours();
-        return (actualHour >= this.DEFAULT_WORK_START_HOUR && 
+        return (actualHour >= this.DEFAULT_WORK_START_HOUR &&
             actualHour < this.DEFAULT_WORK_END_HOUR);
     }
 
