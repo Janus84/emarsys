@@ -22,12 +22,12 @@ describe('DueDateCalculator', function () {
 
     it('should throw an error when turnaround is zero or negative', function () {
         const resultValue = () => dueDateCalculator.calculateDueDate(new Date, 0);
-        assert.throws(resultValue, Error);
+        assert.throws(resultValue, TypeError);
     });
 
     it('should throw an error when turnaround not an integer', function () {
         const resultValue = () => dueDateCalculator.calculateDueDate(new Date, 1.4);
-        assert.throws(resultValue, Error);
+        assert.throws(resultValue, TypeError);
     });
 
     it('should work day before weekend', function () {
@@ -35,14 +35,6 @@ describe('DueDateCalculator', function () {
     });
     it('should work day after weekend', function () {
         assert.isTrue(mockDueDateCalculator.testIsWorkDay(new Date(2025, 0, 6, 0, 0, 0)))
-    });
-
-    it('should not work day start of weekend', function () {
-        assert.isFalse(mockDueDateCalculator.testIsWorkDay(new Date(2025, 0, 4, 0, 0, 0)))
-    });
-
-    it('should not work day end of weekend', function () {
-        assert.isFalse(mockDueDateCalculator.testIsWorkDay(new Date(2025, 0, 5, 23, 59, 59)))
     });
 
     it('should not work day start of weekend', function () {

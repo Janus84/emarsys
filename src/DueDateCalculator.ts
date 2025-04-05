@@ -15,10 +15,16 @@ export class DueDateCalculator {
             throw new TypeError('Wrong submit parameter');
         }
         if (typeof (turnaround) != 'number' || turnaround <= 0 || turnaround % 1 !== 0) {
-            throw new Error('Wrong turnaround parameter');
+            throw new TypeError('Wrong turnaround parameter');
         }
         return new Date();
     }
-    protected isWorkDay(date: Date): boolean {throw new Error}
-    protected isWorkHour(date: Date): boolean {throw new Error}
+    protected isWorkDay(date: Date): boolean {
+        const actualDay = date.getDay();
+        return (actualDay != 0 && actualDay != 6)
+    }
+    protected isWorkHour(date: Date): boolean {
+        const actualHour = date.getHours();
+        return (actualHour >= 9 && actualHour < 17);
+    }
 }
