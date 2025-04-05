@@ -1,5 +1,4 @@
 export class DueDateCalculator {
-    //TODO: env
     private readonly DEFAULT_WORK_START_HOUR: number = 9;
     private readonly DEFAULT_WORK_END_HOUR: number = 17;
 
@@ -17,14 +16,31 @@ export class DueDateCalculator {
         if (typeof (turnaround) != 'number' || turnaround <= 0 || turnaround % 1 !== 0) {
             throw new TypeError('Wrong turnaround parameter');
         }
-        return new Date();
+
+        let targetDate = new Date(submit);
+        let remainingHours = turnaround;
+
+        while (remainingHours > 0) {
+            targetDate.setHours(targetDate.getHours() + 1);
+            if (this.isWorkTime(targetDate)) {
+                remainingHours--;
+            }
+        }
+
+        return targetDate;
     }
+
     protected isWorkDay(date: Date): boolean {
         const actualDay = date.getDay();
         return (actualDay != 0 && actualDay != 6)
     }
+
     protected isWorkHour(date: Date): boolean {
         const actualHour = date.getHours();
         return (actualHour >= 9 && actualHour < 17);
+    }
+
+    private isWorkTime(date: Date): boolean {
+        return (this.isWorkDay(date) && this.isWorkHour(date));
     }
 }
