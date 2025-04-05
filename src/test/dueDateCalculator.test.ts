@@ -20,7 +20,7 @@ describe('DueDateCalculator error handling', function () {
         assert.throws(resultValue), TypeError;
     });
 
-    it('should throw an error when turnaround is zero or negative', function () {
+    it('should throw an error when turnaround is less than 1', function () {
         const resultValue = () => dueDateCalculator.calculateDueDate(new Date, 0);
         assert.throws(resultValue, TypeError);
     });
@@ -90,5 +90,18 @@ describe('DueDateCalculator calculateDueDate cases', function () {
         assert.strictEqual(resultValue.getTime(), expectedValue.getTime());
     });
 });
+
+describe('DueDateCalculator calculate DueDate cases when submit is before or after work time', function(){
+    it('should add 1 hour if submitted before worktime', function () {
+        const resultValue = dueDateCalculator.calculateDueDate(new Date(2025, 0, 1, 0, 0, 0), 1);
+        const expectedValue = new Date(2025, 0, 1, 10, 0, 0);
+        assert.strictEqual(resultValue.getTime(), expectedValue.getTime());
+      })
+      it('should add 1 hour if submitted after worktime', function () {
+        const resultValue = dueDateCalculator.calculateDueDate(new Date(2025, 0, 1, 17, 0, 0), 1);
+        const expectedValue = new Date(2025, 0, 2, 10, 0, 0);
+        assert.strictEqual(resultValue.getTime(), expectedValue.getTime());
+      })
+})
 
 

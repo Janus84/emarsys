@@ -10,7 +10,7 @@ export class DueDateCalculator {
      * @returns The calculated due date, witch is the submit date plus the turnaround time considering working time and weekends).
      */
     public calculateDueDate(submit: Date, turnaround: number): Date {
-        if (!(submit instanceof (Date)) || isNaN(submit.getDate())) {
+        if (!(submit instanceof (Date)) || isNaN(submit.getTime())) {
             throw new TypeError('Wrong submit parameter');
         }
         if (typeof (turnaround) != 'number' || turnaround <= 0 || turnaround % 1 !== 0) {
@@ -26,7 +26,7 @@ export class DueDateCalculator {
                 remainingHours--;
             }
         }
-
+        
         return targetDate;
     }
 
