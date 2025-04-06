@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { SimpleDueDateCalculator } from "../DueDateCalculator.js";
+import { DueDateCalculatorWithLogging, SimpleDueDateCalculator } from "../DueDateCalculator.js";
 
 class MockDueDateCalculator extends SimpleDueDateCalculator {
     public testIsWorkDay(date: Date): boolean {
@@ -10,12 +10,16 @@ class MockDueDateCalculator extends SimpleDueDateCalculator {
         return this.isWorkHour(date);
     }
 
-    public testGetNextWorkStartAfterDate(date: Date): Date{
+    public testGetNextWorkStartAfterDate(date: Date): Date {
         return this.getNextWorkStartAfterDate(date);
     }
 }
 
-const dueDateCalculator = new SimpleDueDateCalculator();
+function testFileLogger(message: string): void{
+    console.log(`test message: ${message}`);
+}
+
+const dueDateCalculator = new DueDateCalculatorWithLogging(new SimpleDueDateCalculator(), testFileLogger);
 const mockDueDateCalculator = new MockDueDateCalculator();
 
 describe('DueDateCalculator error handling', function () {
@@ -100,8 +104,8 @@ describe('DueDateCalculator calculate DueDate cases when submit is before or aft
         const resultValue = mockDueDateCalculator.testGetNextWorkStartAfterDate(new Date(2025, 0, 4, 8, 12, 5));
         const expectedValue = new Date(2025, 0, 6, 9, 0, 0);
         assert.strictEqual(resultValue.getTime(), expectedValue.getTime());
-      })
-    
+    })
+
     it('should add 1 hour if submitted before worktime', function () {
         const resultValue = dueDateCalculator.calculateDueDate(new Date(2025, 0, 1, 0, 0, 0), 1);
         const expectedValue = new Date(2025, 0, 1, 10, 0, 0);
