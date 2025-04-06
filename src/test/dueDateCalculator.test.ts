@@ -9,6 +9,10 @@ class MockDueDateCalculator extends DueDateCalculator {
     public testIsWorkHour(date: Date): boolean {
         return this.isWorkHour(date);
     }
+
+    public testGetNextWorkStartAfterDate(date: Date): Date{
+        return this.getNextWorkStartAfterDate(date);
+    }
 }
 
 const dueDateCalculator = new DueDateCalculator();
@@ -92,6 +96,12 @@ describe('DueDateCalculator calculateDueDate cases', function () {
 });
 
 describe('DueDateCalculator calculate DueDate cases when submit is before or after work time', function () {
+    it('should find first work time after date', function () {
+        const resultValue = mockDueDateCalculator.testGetNextWorkStartAfterDate(new Date(2025, 0, 4, 8, 12, 5));
+        const expectedValue = new Date(2025, 0, 6, 9, 0, 0);
+        assert.strictEqual(resultValue.getTime(), expectedValue.getTime());
+      })
+    
     it('should add 1 hour if submitted before worktime', function () {
         const resultValue = dueDateCalculator.calculateDueDate(new Date(2025, 0, 1, 0, 0, 0), 1);
         const expectedValue = new Date(2025, 0, 1, 10, 0, 0);

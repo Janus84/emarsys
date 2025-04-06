@@ -49,7 +49,7 @@ export class DueDateCalculator {
         return (this.isWorkDay(date) && this.isWorkHour(date));
     }
 
-    private getNextWorkStartAfterDate(date: Date): Date {
+    protected getNextWorkStartAfterDate(date: Date): Date {
         if (this.isWorkTime(date)) {
             return date;
         }
