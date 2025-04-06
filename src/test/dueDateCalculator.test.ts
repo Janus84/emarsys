@@ -1,7 +1,7 @@
 import { assert } from "chai";
-import { DueDateCalculator } from "../DueDateCalculator.js";
+import { SimpleDueDateCalculator } from "../DueDateCalculator.js";
 
-class MockDueDateCalculator extends DueDateCalculator {
+class MockDueDateCalculator extends SimpleDueDateCalculator {
     public testIsWorkDay(date: Date): boolean {
         return this.isWorkDay(date);
     }
@@ -15,7 +15,7 @@ class MockDueDateCalculator extends DueDateCalculator {
     }
 }
 
-const dueDateCalculator = new DueDateCalculator();
+const dueDateCalculator = new SimpleDueDateCalculator();
 const mockDueDateCalculator = new MockDueDateCalculator();
 
 describe('DueDateCalculator error handling', function () {
