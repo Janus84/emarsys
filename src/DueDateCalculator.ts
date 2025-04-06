@@ -1,5 +1,4 @@
-import { DEFAULT_WORK_HOURS } from "./constans";
-import { getNextWorkStartAfterDate, isWorkHour, isWorkTime } from "./utils";
+import { skipIfNotWorkingTime, getNextWorkStartAfterDate, isWorkTime, incrementDate, incrementHours } from "./utils";
 
 interface DueDateCalculatorStrategy {
     addWorkHours(submit: Date, turnaround: number): Date
@@ -7,11 +6,11 @@ interface DueDateCalculatorStrategy {
 
 export class SimpleDueDateCalculatorStrategy implements DueDateCalculatorStrategy {
     public addWorkHours(startDate: Date, turnaround: number): Date {
-        let targetDate = startDate
+        let targetDate = getNextWorkStartAfterDate(startDate);
         let remainingHours = turnaround;
 
         while (remainingHours > 0) {
-            targetDate.setHours(targetDate.getHours() + 1);
+            incrementDate(targetDate);
             if (isWorkTime(targetDate)) {
                 remainingHours--;
             }
@@ -23,18 +22,16 @@ export class SimpleDueDateCalculatorStrategy implements DueDateCalculatorStrateg
 
 export class UpdatedDueDateCalculatorStrategy implements DueDateCalculatorStrategy {
     addWorkHours(startDate: Date, turnaround: number): Date {
-        let targetDate = startDate
+        let targetDate = getNextWorkStartAfterDate(startDate);
         let remainingHours = turnaround;
 
         while (remainingHours > 0) {
-            targetDate.setHours(targetDate.getHours() + 1);
+            incrementHours(targetDate);
             if (isWorkTime(targetDate)) {
-                remainingHours--;
+            } else {
+                targetDate = skipIfNotWorkingTime(targetDate);
             }
-            else {
-                targetDate.setDate(targetDate.getDate() + 1);
-                targetDate.setHours(DEFAULT_WORK_HOURS.START);
-            }
+            remainingHours--;
         }
 
         return targetDate;
@@ -65,11 +62,8 @@ export class DueDateCalculator {
             throw new TypeError('Wrong turnaround parameter');
         }
 
-        let targetDate = getNextWorkStartAfterDate(submit);
-        
-        const calculatedDueDate = this.dueDateCalculatorStrategy.addWorkHours(targetDate, turnaround)
+        const calculatedDueDate = this.dueDateCalculatorStrategy.addWorkHours(submit, turnaround)
 
         return calculatedDueDate;
     }
-
 }

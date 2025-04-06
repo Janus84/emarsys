@@ -20,10 +20,39 @@ export function getNextWorkStartAfterDate(date: Date): Date {
     }
 
     let targetDate = new Date(date);
-    while (isWorkTime(targetDate)) {
+    while (!isWorkTime(targetDate)) {
         targetDate.setHours(targetDate.getHours() + 1);
     }
     targetDate.setMinutes(0, 0, 0);
 
     return targetDate;
+}
+
+export function skipIfNotWorkingTime(date: Date): Date {
+    let targetDate = new Date(date);
+
+    while (!isWorkDay(targetDate)) {
+        targetDate.setDate(targetDate.getDate() + 1);
+        continue;
+    }
+
+    if (targetDate.getHours() >= DEFAULT_WORK_HOURS.END) {
+        targetDate.setDate(targetDate.getDate() + 1);
+        targetDate.setHours(DEFAULT_WORK_HOURS.START);
+    }
+
+    targetDate.setHours(DEFAULT_WORK_HOURS.START);
+    if (!isWorkDay(targetDate)) {
+        targetDate = skipIfNotWorkingTime(targetDate);
+    }
+
+    return targetDate;
+}
+
+export function incrementDate(date: Date): void {
+    date.setHours(date.getHours() + 1);
+}
+
+export function incrementHours(date: Date): void {
+    date.setHours(date.getHours() + 1);
 }
