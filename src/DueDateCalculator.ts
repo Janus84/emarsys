@@ -1,8 +1,51 @@
-import { workerData } from "worker_threads";
+import { DEFAULT_WORK_HOURS } from "./constans";
+import { getNextWorkStartAfterDate, isWorkHour, isWorkTime } from "./utils";
+
+interface DueDateCalculatorStrategy {
+    addWorkHours(submit: Date, turnaround: number): Date
+}
+
+export class SimpleDueDateCalculatorStrategy implements DueDateCalculatorStrategy {
+    public addWorkHours(startDate: Date, turnaround: number): Date {
+        let targetDate = startDate
+        let remainingHours = turnaround;
+
+        while (remainingHours > 0) {
+            targetDate.setHours(targetDate.getHours() + 1);
+            if (isWorkTime(targetDate)) {
+                remainingHours--;
+            }
+        }
+
+        return targetDate;
+    }
+}
+
+export class UpdatedDueDateCalculatorStrategy implements DueDateCalculatorStrategy {
+    addWorkHours(startDate: Date, turnaround: number): Date {
+        let targetDate = startDate
+        let remainingHours = turnaround;
+
+        while (remainingHours > 0) {
+            targetDate.setHours(targetDate.getHours() + 1);
+            if (isWorkTime(targetDate)) {
+                remainingHours--;
+            }
+            else {
+                targetDate.setDate(targetDate.getDate() + 1);
+                targetDate.setHours(DEFAULT_WORK_HOURS.START);
+            }
+        }
+
+        return targetDate;
+    }
+}
 
 export class DueDateCalculator {
-    private readonly DEFAULT_WORK_START_HOUR: number = 9;
-    private readonly DEFAULT_WORK_END_HOUR: number = 17;
+
+    constructor(
+        private dueDateCalculatorStrategy: DueDateCalculatorStrategy = new SimpleDueDateCalculatorStrategy()
+    ) { }
 
     /**
      * Calculates the due date by adding turnaround time to the submit date
@@ -14,6 +57,7 @@ export class DueDateCalculator {
      * @throws {TypeError} If the 'submit' parameter is not a valid Date object or the 'turnaround' parameter is not a positive integer. 
      */
     public calculateDueDate(submit: Date, turnaround: number): Date {
+
         if (!(submit instanceof (Date)) || isNaN(submit.getTime())) {
             throw new TypeError('Wrong submit parameter');
         }
@@ -21,45 +65,11 @@ export class DueDateCalculator {
             throw new TypeError('Wrong turnaround parameter');
         }
 
-        let targetDate = this.getNextWorkStartAfterDate(submit);
-        let remainingHours = turnaround;
+        let targetDate = getNextWorkStartAfterDate(submit);
+        
+        const calculatedDueDate = this.dueDateCalculatorStrategy.addWorkHours(targetDate, turnaround)
 
-        while (remainingHours > 0) {
-            targetDate.setHours(targetDate.getHours() + 1);
-            if (this.isWorkTime(targetDate)) {
-                remainingHours--;
-            }
-        }
-
-        return targetDate;
+        return calculatedDueDate;
     }
 
-    protected isWorkDay(date: Date): boolean {
-        const actualDay = date.getDay();
-        return (actualDay != 0 && actualDay != 6)
-    }
-
-    protected isWorkHour(date: Date): boolean {
-        const actualHour = date.getHours();
-        return (actualHour >= this.DEFAULT_WORK_START_HOUR &&
-            actualHour < this.DEFAULT_WORK_END_HOUR);
-    }
-
-    private isWorkTime(date: Date): boolean {
-        return (this.isWorkDay(date) && this.isWorkHour(date));
-    }
-
-    protected getNextWorkStartAfterDate(date: Date): Date {
-        if (this.isWorkTime(date)) {
-            return date;
-        }
-
-        let targetDate = new Date(date);
-        while (!this.isWorkTime(targetDate)) {
-            targetDate.setHours(targetDate.getHours() + 1);
-        }
-        targetDate.setMinutes(0, 0, 0);
-
-        return targetDate;
-    }
 }
