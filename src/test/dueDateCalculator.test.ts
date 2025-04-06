@@ -2,22 +2,7 @@ import { assert } from "chai";
 import { DueDateCalculator, UpdatedDueDateCalculatorStrategy } from "../DueDateCalculator.js";
 import { getNextWorkStartAfterDate, isWorkDay, isWorkHour } from "../utils.js";
 
-// class MockDueDateCalculator extends DueDateCalculator {
-//     public testIsWorkDay(date: Date): boolean {
-//         return this.isWorkDay(date);
-//     }
-
-//     public testIsWorkHour(date: Date): boolean {
-//         return this.isWorkHour(date);
-//     }
-
-//     public testGetNextWorkStartAfterDate(date: Date): Date{
-//         return this.getNextWorkStartAfterDate(date);
-//     }
-// }
-
 const dueDateCalculator = new DueDateCalculator(new UpdatedDueDateCalculatorStrategy());
-// const mockDueDateCalculator = new MockDueDateCalculator();
 
 describe('DueDateCalculator error handling', function () {
     it('should throw an error when submit is invalid Date object', function () {
