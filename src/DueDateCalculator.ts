@@ -1,8 +1,11 @@
 import { workerData } from "worker_threads";
+import { DEFAULT_WORK_HOURS } from "./constans";
 
-export class DueDateCalculator {
-    private readonly DEFAULT_WORK_START_HOUR: number = 9;
-    private readonly DEFAULT_WORK_END_HOUR: number = 17;
+interface DueDateCalculator{
+    calculateDueDate(submit: Date, turnaround: number): Date;
+}
+
+export class SimpleDueDateCalculator implements DueDateCalculator{
 
     /**
      * Calculates the due date by adding turnaround time to the submit date
@@ -41,8 +44,8 @@ export class DueDateCalculator {
 
     protected isWorkHour(date: Date): boolean {
         const actualHour = date.getHours();
-        return (actualHour >= this.DEFAULT_WORK_START_HOUR &&
-            actualHour < this.DEFAULT_WORK_END_HOUR);
+        return (actualHour >= DEFAULT_WORK_HOURS.START &&
+            actualHour < DEFAULT_WORK_HOURS.END);
     }
 
     private isWorkTime(date: Date): boolean {
@@ -61,5 +64,26 @@ export class DueDateCalculator {
         targetDate.setMinutes(0, 0, 0);
 
         return targetDate;
+    }
+}
+
+abstract class DueDateCalculatorDecorator implements DueDateCalculator{
+    constructor(protected decoratedDueDateCalculator: DueDateCalculator){}
+    calculateDueDate(submit: Date, turnaround: number): Date {
+        return this.decoratedDueDateCalculator.calculateDueDate(submit, turnaround);
+    }
+}
+
+export class DueDateCalculatorWithLogging extends DueDateCalculatorDecorator{
+    constructor(
+        decorated: DueDateCalculator,
+        private logger: (msg: string) => void = console.log
+    ) {
+        super(decorated);
+    }
+    calculateDueDate(submit: Date, turnaround: number): Date {
+        const date = super.calculateDueDate(submit, turnaround);
+        this.logger(`result: ${date.toString()}`);
+        return date;
     }
 }
