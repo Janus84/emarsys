@@ -15,13 +15,14 @@ export function isWorkTime(date: Date): boolean {
 }
 
 export function getNextWorkStartAfterDate(date: Date): Date {
-    if (isWorkTime(date)) {
-        return date;
+    let targetDate = new Date(date);
+
+    if (isWorkTime(targetDate)) {
+        return targetDate;
     }
 
-    let targetDate = new Date(date);
     while (!isWorkTime(targetDate)) {
-        targetDate.setHours(targetDate.getHours() + 1);
+        incrementHours(targetDate);
     }
     targetDate.setMinutes(0, 0, 0);
 
@@ -32,16 +33,15 @@ export function skipIfNotWorkingTime(date: Date): Date {
     let targetDate = new Date(date);
 
     while (!isWorkDay(targetDate)) {
-        targetDate.setDate(targetDate.getDate() + 1);
+        incrementDates(targetDate);
         continue;
     }
 
     if (targetDate.getHours() >= DEFAULT_WORK_HOURS.END) {
-        targetDate.setDate(targetDate.getDate() + 1);
-        targetDate.setHours(DEFAULT_WORK_HOURS.START);
+        incrementDates(targetDate);
     }
-
     targetDate.setHours(DEFAULT_WORK_HOURS.START);
+
     if (!isWorkDay(targetDate)) {
         targetDate = skipIfNotWorkingTime(targetDate);
     }
@@ -51,4 +51,8 @@ export function skipIfNotWorkingTime(date: Date): Date {
 
 export function incrementHours(date: Date): void {
     date.setHours(date.getHours() + 1);
+}
+
+export function incrementDates(date: Date): void {
+    date.setDate(date.getDate() + 1);
 }
