@@ -49,10 +49,6 @@ export function skipIfNotWorkingTime(date: Date): Date {
     return targetDate;
 }
 
-export function incrementDate(date: Date): void {
-    date.setHours(date.getHours() + 1);
-}
-
 export function incrementHours(date: Date): void {
     date.setHours(date.getHours() + 1);
 }

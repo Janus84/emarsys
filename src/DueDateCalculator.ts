@@ -1,4 +1,4 @@
-import { skipIfNotWorkingTime, getNextWorkStartAfterDate, isWorkTime, incrementDate, incrementHours } from "./utils";
+import { skipIfNotWorkingTime, getNextWorkStartAfterDate, isWorkTime, incrementHours } from "./utils";
 
 interface DueDateCalculatorStrategy {
     addWorkHours(submit: Date, turnaround: number): Date
@@ -10,7 +10,7 @@ export class SimpleDueDateCalculatorStrategy implements DueDateCalculatorStrateg
         let remainingHours = turnaround;
 
         while (remainingHours > 0) {
-            incrementDate(targetDate);
+            incrementHours(targetDate);
             if (isWorkTime(targetDate)) {
                 remainingHours--;
             }
@@ -27,8 +27,7 @@ export class UpdatedDueDateCalculatorStrategy implements DueDateCalculatorStrate
 
         while (remainingHours > 0) {
             incrementHours(targetDate);
-            if (isWorkTime(targetDate)) {
-            } else {
+            if (!isWorkTime(targetDate)) {
                 targetDate = skipIfNotWorkingTime(targetDate);
             }
             remainingHours--;
