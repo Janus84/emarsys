@@ -34,7 +34,6 @@ export function skipIfNotWorkingTime(date: Date): Date {
 
     while (!isWorkDay(targetDate)) {
         incrementDates(targetDate);
-        continue;
     }
 
     if (targetDate.getHours() >= DEFAULT_WORK_HOURS.END) {
